@@ -14,10 +14,10 @@ const Thread = async ({ params }: { params: { id: string } }) => {
   const userInfo = await fetchUser(user.id);
 
   if (!userInfo?.onboarded) {
-    redirect('/onboarding');
+    redirect("/onboarding");
   }
 
-  const thread = await fetchThreadById(params.id)
+  const thread = await fetchThreadById(params.id);
 
   return (
     <section className="relative">
@@ -36,10 +36,26 @@ const Thread = async ({ params }: { params: { id: string } }) => {
       </div>
       <div className="mt-7">
         <Comment
-        threadId={thread.id}
-        currentUserImg={user.imageUrl}
-        currentUserId={JSON.stringify(userInfo._id)}
+          threadId={thread.id}
+          currentUserImg={userInfo.image}
+          currentUserId={JSON.stringify(userInfo._id)}
         />
+      </div>
+      <div className="mt-10">
+        {thread.children.map((child: any) => (
+          <ThreadCard
+            key={child._id}
+            id={child._id}
+            currentUserId={user?.id || ""}
+            parentId={child.parentId}
+            content={child.text}
+            author={child.author}
+            community={child.community}
+            createdAt={child.createdAt}
+            comments={child.children}
+            isComment
+          />
+        ))}
       </div>
     </section>
   );
